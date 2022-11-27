@@ -1,7 +1,7 @@
 --region HADLE_FOR_UPDATES
 --really simple auto updater
-local CURRENT_LUA_VERSION = "2.1";
-local LATEST_LUA_VERSION = http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/VisualsVersion")
+local CURRENT_LUA_VERSION = 3;
+local LATEST_LUA_VERSION = tonumber(http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/VisualsVersion"))
 
 --checking for version == latest
 if CURRENT_LUA_VERSION ~= LATEST_LUA_VERSION then
