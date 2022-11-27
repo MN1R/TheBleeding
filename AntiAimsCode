@@ -606,7 +606,7 @@ constants.DESYNC_SIDE_INDICATOR_SIZE_Y = 20;
 local function drawDesyncSideIndicator()
     
     --checking for enable
-    if not anti_aim_indicators_ui.desync_side_indicator:GetValue() then
+    if not anti_aim_indicators_ui.desync_side_indicator:GetValue() or not local_entity or not local_entity:IsAlive() then
         return 
     end
     
