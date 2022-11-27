@@ -174,8 +174,6 @@ local fonts =
 {
     keybinds_font = draw.CreateFont("Avenir Next LT Pro Light", 13),
 
-    emoji_font = draw.CreateFont("Tahoma", 22),
-
     world_damage_font = draw.CreateFont("Bahnschrift SemiBold", 15, 800, 0),
     world_damage_font_outlined = draw.CreateFont("Bahnschrift SemiBold", 15, 800, 1),
 };
@@ -960,7 +958,7 @@ local prop_array = {};
 local function setProp(entity, name, value)
 
     --checking for prop value is new
-    if value ~= nil and (value ~= prop_array[name] or not prop_array[name]) then
+    if entity and value ~= nil and (value ~= prop_array[name] or not prop_array[name]) then
 
         entity:SetProp(name, value)
         prop_array[name] = value
