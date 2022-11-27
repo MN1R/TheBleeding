@@ -209,6 +209,12 @@ local function miscUsefull()
     setConvar("cl_bobcycle", static_arms_enabled and 0.98 or 0)
     setConvar("cl_viewmodel_shift_right_amt", static_arms_enabled and 0.25000 or 0)
     setConvar("cl_viewmodel_shift_left_amt", static_arms_enabled and 0.5000 or 1)
+
+    --reseting convar array on server switch
+    if not local_entity then
+
+        convar_array = {};
+    end
 end
 --endregion
 
