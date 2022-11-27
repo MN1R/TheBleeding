@@ -138,7 +138,7 @@ local function getClosestToCrosshair()
 
             --getting their on screen distances
             local entity_on_screen = {client.WorldToScreen(entity:GetAbsOrigin())}
-            local distance_to_entity = {vector.Distance(main_variables.screen_width / 2, main_variables.screen_height / 2, 0, entity_on_screen[1], entity_on_screen[2], 0)}
+            local distance_to_entity = {vector.Distance(screen_width / 2, screen_height / 2, 0, entity_on_screen[1], entity_on_screen[2], 0)}
 
             --finding closest
             if distance_to_entity[1] < nearest_distance then
@@ -153,11 +153,11 @@ end
 
 
 --autoscope, which basing on distance to closest to crosshair
-constants.MAX_NOSCOPE_DISTANCE = 200
+constants.MAX_NOSCOPE_DISTANCE = 250
 
 local function adaptiveAutoscope()
 
-    --if distance to closest target < 200, disabling asniper autostop
+    --if distance to closest target < 250, disabling asniper autostop
     if misc_useful_ui.adaptive_autoscope:GetValue() and getClosestToCrosshair() and current_weapon_group == "asniper" then
 
         --target and local abs
@@ -291,6 +291,7 @@ callbacks.Register("PostMove", function()
 
     --misc usefull
     miscUsefull()
+    adaptiveAutoscope()
 end)
 
 
