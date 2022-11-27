@@ -1,6 +1,6 @@
 --region HADLE_FOR_UPDATES
 --really simple auto updater
-local CURRENT_LUA_VERSION = 2.0;
+local CURRENT_LUA_VERSION = 2.1;
 local LATEST_LUA_VERSION = tonumber(http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/AntiAimsVersion"))
 
 --checking for version == latest
@@ -614,7 +614,7 @@ local function drawDesyncSideIndicator()
     local screen_width, screen_height = draw.GetScreenSize()
 
     --checking for desync side
-    if desync_inverted then
+    if not desync_inverted then
 
         --right
         draw.Color(desync_side_indicator_color_active:GetValue())
