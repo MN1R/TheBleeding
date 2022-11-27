@@ -1,6 +1,6 @@
 --region HADLE_FOR_UPDATES
 --really simple auto updater
-local CURRENT_LUA_VERSION = 2.0;
+local CURRENT_LUA_VERSION = 2.01;
 local LATEST_LUA_VERSION = tonumber(http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/VisualsVersion"))
 
 --checking for version == latest
@@ -719,7 +719,7 @@ local function createVisualsAnimations()
     end
 
     --disable animation for unstandart guns(grenades, knife)
-    if getWeaponGroup() ~= current_weapon_group and visuals_user_info_ui.weapon_info:GetValue() and local_entity and local_entity:IsAlive() then
+    if getWeaponGroup() == current_weapon_group and visuals_user_info_ui.weapon_info:GetValue() and local_entity and local_entity:IsAlive() then
  
         --showing animation
         weapon_info_alpha = weapon_info_alpha + constants.MAIN_ANIMATION_SPEED * getAnimationScale()
