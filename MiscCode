@@ -270,7 +270,7 @@ local function buyBot(event)
         --extra
         client.Command(getBuyBotExtra(), true)
 
-        printDebugMessage("buy bot bought all weapons")
+        --printDebugMessage("buy bot bought all weapons")
     end
 end
 --endregion
