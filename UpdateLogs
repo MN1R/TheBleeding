@@ -4,7 +4,6 @@ MAIN
 -Lua has been separeted to anti-aims script and visuals script(misc will be released soon)
 -Code base has been reorganized and optimized
 
-
 ANTI-AIMS
 -Added config system
 -Improved tank jitters
