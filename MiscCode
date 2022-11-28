@@ -1,6 +1,6 @@
 --region HADLE_FOR_UPDATES
 --really simple auto updater
-local CURRENT_LUA_VERSION = "4";
+local CURRENT_LUA_VERSION = "5";
 local LATEST_LUA_VERSION = string.gsub(http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/MiscVersion.txt"), "\n", "");
 
 --checking for version == latest
