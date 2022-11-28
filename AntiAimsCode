@@ -948,3 +948,4 @@ end)
 --region USERS_NOTIFY
 gui.SetValue("misc.log.console", true)
 print("I made really cool and tank anti-aim config, add me to discrod: Henderson Hasselback#0693 to get it!")
+--endregion
