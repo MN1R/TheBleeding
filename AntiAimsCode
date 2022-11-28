@@ -1,6 +1,6 @@
 --region HADLE_FOR_UPDATES
 --really simple auto updater
-local CURRENT_LUA_VERSION = 3;
+local CURRENT_LUA_VERSION = 4;
 local LATEST_LUA_VERSION = tonumber(http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/AntiAimsVersion"))
 
 --checking for version == latest
@@ -462,8 +462,8 @@ local function advancedYawModifier()
         (anti_aim_elements[anti_aim_condition].yaw_modifier_range:GetValue() / 2) * side_switcher,
         (side_switcher > 0 and anti_aim_elements[anti_aim_condition].yaw_modifier_range:GetValue() or 0),
         (math.random(0, anti_aim_elements[anti_aim_condition].yaw_modifier_range:GetValue()) / 2) * side_switcher,
-        ((anti_aim_elements[anti_aim_condition].yaw_modifier_range:GetValue() + math.random(0, 10)) / 2) * side_switcher,
-        (random_yaw + math.random(0, 10)) * side_switcher,
+        ((anti_aim_elements[anti_aim_condition].yaw_modifier_range:GetValue() + math.random(-10, 10)) / 2) * side_switcher,
+        (random_yaw + math.random(-10, 10)) * side_switcher,
     }
 
 
@@ -764,6 +764,13 @@ end
 --creating lua file, which will have global varialbe with settings, then loading it
 local config_load = gui.Button(anti_aim_configs_tab, "Load", function()
 
+    --checking for active config
+    if not configs_gui_array[getCurrentConfig()] then
+
+        print("Select config to load")
+        return 
+    end
+
     --getting script name
     local config_name = configs_gui_array[getCurrentConfig()]:GetName()
 
@@ -850,7 +857,15 @@ end
 --deleting old and creating new file with updated data
 local config_save = gui.Button(anti_aim_configs_tab, "Save", function()
 
+    --checking for active config
+    if not configs_gui_array[getCurrentConfig()] then
+
+        print("Select config to save")
+        return 
+    end
+
     local config_name = configs_gui_array[getCurrentConfig()]:GetName() .. "_bleeding_config.txt"
+
 
     file.Delete(config_name)
     file.Write(config_name, getAntiAimSettings())
@@ -871,6 +886,13 @@ config_create:SetPosY(75)
 
 --removing config file
 local config_remove = gui.Button(anti_aim_configs_tab, "Remove", function()
+
+    --checking for active config
+    if not configs_gui_array[getCurrentConfig()] then
+
+        print("Select config to remove")
+        return 
+    end
 
     file.Delete(configs_gui_array[getCurrentConfig()]:GetName() .. "_bleeding_config.txt")
     updateConfigList()
