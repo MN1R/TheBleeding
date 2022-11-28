@@ -419,6 +419,7 @@ local random_yaw = 0;
 
 --all desync modifiers
 local desync_angle = 0;
+local cmd_sendpacket = false
 
 local function advancedDesyncModifier()
 
@@ -429,7 +430,7 @@ local function advancedDesyncModifier()
     if anti_aim_elements[anti_aim_condition].desync_modifier:GetValue() == 1 then
 
         --if delta time >= switch delay then switching jitter side
-        if real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) then
+        if real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) and cmd_sendpacket then
             
             --switching side
             desync_inverted = not desync_inverted
@@ -466,22 +467,23 @@ local function advancedYawModifier()
         (random_yaw + math.random(-10, 10)) * side_switcher,
     }
 
-
     --checking for fake flick
     if anti_aim_elements[anti_aim_condition].yaw_modifier:GetValue() == 6 then
 
         --if delta time >= switch delay then switching jitter side
-        if real_time - last_switch_time >= ((side_switcher > 0 and 1 or side_switch_delay) * constants.TICK_TIME) then
+        if real_time - last_switch_time >= ((side_switcher > 0 and 1 or side_switch_delay) * constants.TICK_TIME) and cmd_sendpacket then
             
             jitter_yaw = (side_switcher > 0 and 0 or (desync_inverted and 100 or -100))
 
             side_switcher = -side_switcher
+
+
             last_switch_time = real_time
         end
     else
         
         --if delta time >= switch delay then switching jitter side
-        if real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) then
+        if real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) and cmd_sendpacket then
 
             jitter_yaw = all_jitter_yaw_values[anti_aim_elements[anti_aim_condition].yaw_modifier:GetValue() + 1]
 
@@ -498,7 +500,7 @@ constants.ANGLE_PER_POSITION = 10;
 local function simpleJitter()
     
     --if delta time >= switch delay then switching jitter side
-    if real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) then
+    if real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) and cmd_sendpacket then
 
         --center jitter
         jitter_yaw = (constants.ANGLE_PER_POSITION * anti_aim_simple_settings_ui.jitter_angle:GetValue()) * side_switcher
@@ -562,7 +564,9 @@ end
 
 
 --setting base and rotation
-local function setAntiAims()
+local function setAntiAims(cmd)
+
+    cmd_sendpacket = cmd.sendpacket
 
     gui.SetValue("rbot.antiaim.base", tostring(clampYaw(180 + jitter_yaw - main_yaw + (legit_yaw == nil and 0 or legit_yaw) + ((manual_yaw == nil or legit_yaw) and 0 or manual_yaw))) .. getDesyncType())
     gui.SetValue("rbot.antiaim.base.rotation", desync_angle)
@@ -923,7 +927,7 @@ callbacks.Register("Draw", function()
 end)
 
 
-callbacks.Register("PostMove", function()
+callbacks.Register("PostMove", function(cmd)
     
     --anti-aims
     legitAntiAims()
@@ -931,7 +935,7 @@ callbacks.Register("PostMove", function()
 
     callJitterFunctions()
     mainYaw()
-    setAntiAims()
+    setAntiAims(cmd)
 
     --rage
     setExploits()
@@ -947,7 +951,5 @@ end)
 
 --region USERS_NOTIFY
 gui.SetValue("misc.log.console", true)
-print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 print("I made really cool and tank anti-aim config, add me to discrod: Henderson Hasselback#0693 to get it!")
-print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 --endregion
