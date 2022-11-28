@@ -16,11 +16,15 @@ VISUALS
 -Some functions been removed for rework
 
 
-Visuals V2.1 update:
+Visuals V3 update:
 -Fixed bug with weapon info
 
-Anti-Aims v2.1 update:
+Anti-Aims V3 update:
 -Fixed desync side indicator
 
 Misc v2 released:
 -Added new features and improved old
+
+Anti-Aims V4 update:
+-Added some fixes to config system
+-Improved tank jitters
