@@ -28,3 +28,7 @@ Misc v2 released:
 Anti-Aims V4 update:
 -Added some fixes to config system
 -Improved tank jitters
+
+Misc V3 update:
+-Added console filter
+-Improved convars caching
