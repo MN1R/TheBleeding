@@ -1,6 +1,6 @@
 --region HADLE_FOR_UPDATES
 --really simple auto updater
-local CURRENT_LUA_VERSION = 5;
+local CURRENT_LUA_VERSION = 6;
 local LATEST_LUA_VERSION = tonumber(http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/AntiAimsVersion"))
 
 --checking for version == latest
@@ -951,5 +951,7 @@ end)
 
 --region USERS_NOTIFY
 gui.SetValue("misc.log.console", true)
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 print("I made really cool and tank anti-aim config, add me to discrod: Henderson Hasselback#0693 to get it!")
+print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 --endregion
