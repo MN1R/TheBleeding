@@ -1,6 +1,6 @@
 --region HADLE_FOR_UPDATES
 --really simple auto updater
-local CURRENT_LUA_VERSION = 6;
+local CURRENT_LUA_VERSION = "6";
 local LATEST_LUA_VERSION = string.gsub(http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/AntiAimsVersion.txt"), "\n", "")
 
 --checking for version == latest
