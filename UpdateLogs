@@ -1,43 +1,15 @@
-Version V2 update:
+Version V2.0 update
+Main:
+1) Returned Auto-Updater
 
-MAIN
--Lua has been separeted to anti-aims script and visuals script(misc will be released soon)
--Code base has been reorganized and optimized
+Anti-Aims:
+1) Added Anti-Backstab
+2) Added Auto-Teleport
+3) Added Manuals Indicators
+4) Some stability improvements
 
-ANTI-AIMS
--Added config system
--Improved tank jitters
--Improved stability
--Removed useless options
-
-VISUALS
--Fully reworked all visuals
--Reworked caching for world visuals
--Some functions been removed for rework
-
-
-Visuals V3 update:
--Fixed bug with weapon info
-
-Anti-Aims V3 update:
--Fixed desync side indicator
-
-Misc v2 released:
--Added new features and improved old
-
-Anti-Aims V4 update:
--Added some fixes to config system
--Improved tank jitters
-
-Misc V3 update:
--Added console filter
--Improved convars caching
-
-Misc V4 update:
--Forgot to fix smth
-
-Anti V6 update:
--Improved jitters stabily, thanks to @oguzsasi for recommendations
-
-Update MAIN:
--removed auto-updater(fuck it, with string expected, number expected)
+Visuals:
+1) Added Bullet Tracers
+ 
+Misc: 
+1) Reorganized GUI
