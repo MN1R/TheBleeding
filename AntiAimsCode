@@ -624,7 +624,7 @@ local function antiBackstab()
             local distance_to_entity = vector.Distance(entity_abs.x, entity_abs.y, entity_abs.z, local_abs.x, local_abs.y, local_abs.z)
 
             --finding entity, with knife and close to us
-            if string.find(tostring(entity:GetPropEntity("m_hActiveWeapon")), "knife") and distance_to_entity <= constants.ANTI_BACKSTAB_DISTANCE then
+            if entity:GetPropEntity("m_hActiveWeapon") ~= nil and string.find(tostring(entity:GetPropEntity("m_hActiveWeapon")), "knife") and distance_to_entity <= constants.ANTI_BACKSTAB_DISTANCE then
 
                 anti_backstab_yaw = 180;
             end
@@ -674,6 +674,9 @@ constants.TELEPORT_DELAY_TIME = 2;
 constants.TELEPORT_TIME = 0.15;
 
 local function autoTeleport()
+
+    --checking for local
+    if not local_entity or not local_entity:IsAlive() or not anti_aim_other_ui.auto_teleport:GetValue() then return end 
 
     --iterating over all entities
     for _, entity in pairs(entities.FindByClass("CCSPlayer")) do
