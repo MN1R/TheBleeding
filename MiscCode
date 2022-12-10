@@ -1,3 +1,49 @@
+--region AUTO_UPDATER
+local CURRENT_VERSION = "2.0"
+local LAST_VERSION = http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/MiscVersion")
+
+--writing file with our version to remove tonumber, string.gsub for random format
+local latest_version_file_name = "bleeding_last_version.txt"
+file.Write(latest_version_file_name,  tostring(LAST_VERSION))
+
+--getting data from file, its 100% string
+local file_open = file.Open(latest_version_file_name, 'r')
+local file_data = file_open:Read()
+file_open:Close()
+
+--getting full vesrion without any memes
+LAST_VERSION = string.sub(file_data, 0, string.len(CURRENT_VERSION));
+
+--deleting file
+file.Delete(latest_version_file_name)
+
+--if lua is outdated
+if LAST_VERSION ~= CURRENT_VERSION then
+
+    print("Lua is outdated.")
+
+    --getting latest data
+    local LAST_LUA_DATA = http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/MiscCode")
+
+    --starting update
+    local script_name = GetScriptName()
+
+    --deleting current lua
+    file.Delete(script_name)
+
+    --writing new file with latest data
+    file.Write(GetScriptName(), LAST_LUA_DATA)
+    print("Script succesfully updated. Load it again.")
+    return
+end
+
+--if lua is updated
+print("Successfully loaded " .. CURRENT_VERSION .. " version.")
+
+
+
+
+
 --region GUI
 --------------------MISC----------------------
 local misc_tab = gui.Tab(gui.Reference("Misc"), "misc_tab", "Misc Tab");
@@ -19,7 +65,7 @@ local misc_useful_ui =
 
 
 --_______________events________________--
-local misc_events = gui.Groupbox(misc_tab, "Events", 5, 280, 325, 450);
+local misc_events = gui.Groupbox(misc_tab, "Events", 340, 10, 290, 350);
 
 local misc_events_ui = 
 {
@@ -256,6 +302,14 @@ end
 
 
 
+--region GUI_EDIT
+local function editGui()
+    
+    misc_events_ui.buy_bot_primary:SetDisabled(not misc_events_ui.buy_bot:GetValue())
+    misc_events_ui.buy_bot_secondary:SetDisabled(not misc_events_ui.buy_bot:GetValue())
+    misc_events_ui.buy_bot_extra:SetDisabled(not misc_events_ui.buy_bot:GetValue())
+end
+
 --region CALLBACKS
 callbacks.Register("Draw", function()  
 
@@ -264,6 +318,9 @@ callbacks.Register("Draw", function()
 
     --misc usefull
     miscUsefull()
+
+    --edit gui
+    editGui()
 end)
 
 
