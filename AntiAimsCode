@@ -1,20 +1,71 @@
+--region AUTO_UPDATER
+local CURRENT_VERSION = "2.0"
+local LAST_VERSION = http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/AntiAimVersion")
+
+--writing file with our version to remove tonumber, string.gsub for random format
+local latest_version_file_name = "bleeding_last_version.txt"
+file.Write(latest_version_file_name,  tostring(LAST_VERSION))
+
+--getting data from file, its 100% string
+local file_open = file.Open(latest_version_file_name, 'r')
+local file_data = file_open:Read()
+file_open:Close()
+
+--getting full vesrion without any memes
+LAST_VERSION = string.sub(file_data, 0, string.len(CURRENT_VERSION));
+
+--deleting file
+file.Delete(latest_version_file_name)
+
+--if lua is outdated
+if LAST_VERSION ~= CURRENT_VERSION then
+
+    print("Lua is outdated.")
+
+    --getting latest data
+    local LAST_LUA_DATA = http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/AntiAimsCode")
+
+    --starting update
+    local script_name = GetScriptName()
+
+    --deleting current lua
+    file.Delete(script_name)
+
+    --writing new file with latest data
+    file.Write(GetScriptName(), LAST_LUA_DATA)
+    print("Script succesfully updated. Load it again.")
+    return
+end
+
+--if lua is updated
+print("Successfully loaded " .. CURRENT_VERSION .. " version.")
+
+
+
+
+
 --region GUI
 local anti_aim_settings_tab = gui.Tab(gui.Reference("Ragebot"), "anti_aim_settings_tab", "Anti-Aim Settings Tab");
 
+--enable section
+local anti_aim_enable_section = gui.Groupbox(anti_aim_settings_tab, "Enable Section", 5, 10, 325, 450);
+
+local enable_script = gui.Checkbox(anti_aim_enable_section, "enable_script", "Enable Script", true);
+
 --mode selector
-local anti_aim_mode_selector = gui.Groupbox(anti_aim_settings_tab, "Mode", 5, 10, 325, 450);
+local anti_aim_mode_selector = gui.Groupbox(anti_aim_settings_tab, "Mode", 5, 100, 325, 450);
 
 local advanced_mode = gui.Checkbox(anti_aim_mode_selector, "advanced_mode", "Advanced Mode", false);
 
 
 --condition selector
-local anti_aim_condition_selector = gui.Groupbox(anti_aim_settings_tab, "Condition", 5, 100, 325, 450);
+local anti_aim_condition_selector = gui.Groupbox(anti_aim_settings_tab, "Condition", 5, 190, 325, 450);
 
 local condition_selector = gui.Combobox(anti_aim_condition_selector, "condition_selector", "Select Condition", "General", "Standing", "Ducking", "Slow Walking", "Moving", "In Air")
 
 
 --advanced settings
-local anti_aim_advanced_settings = gui.Groupbox(anti_aim_settings_tab, "Advanced Settings", 5, 210, 325, 350);
+local anti_aim_advanced_settings = gui.Groupbox(anti_aim_settings_tab, "Advanced Settings", 5, 300, 325, 350);
 
 local anti_aim_names = {"general", "standing", "ducking", "slow_walking", "moving", "air"};
 local anti_aim_elements = {};
@@ -57,7 +108,7 @@ local function createAntiAimGui()
                                        "Static", "Center Jitter", "Offset Jitter","Random Jitter", "Tank Jitter", "Random Tank Jitter", "Fake Flick")
 
         condition_array.yaw_modifier_range = gui.Slider(anti_aim_advanced_settings, "yaw_modifier_range_" .. element_varname, "Yaw Modifier Range", 0, 0, 180, 1)
-        condition_array.yaw_modifier_speed = gui.Slider(anti_aim_advanced_settings, "yaw_modifier_speed_" .. element_varname, "Yaw Modifier Speed", 1.5, 1.5, 64, 0.5)
+        condition_array.yaw_modifier_speed = gui.Slider(anti_aim_advanced_settings, "yaw_modifier_speed_" .. element_varname, "Yaw Modifier Speed", 2, 1.5, 64, 0.5)
     end
 end
 
@@ -66,7 +117,7 @@ createAntiAimGui()
 
 
 --simple settings
-local anti_aim_simple_settings = gui.Groupbox(anti_aim_settings_tab, "Simple Settings", 5, 100, 325, 350);
+local anti_aim_simple_settings = gui.Groupbox(anti_aim_settings_tab, "Simple Settings", 5, 200, 325, 350);
 
 local anti_aim_simple_settings_ui = 
 {
@@ -101,6 +152,8 @@ local anti_aim_other_ui =
     --autodirection
     at_targets = gui.Checkbox(anti_aim_other, "at_targets", "At Targets", false),
     at_edges = gui.Checkbox(anti_aim_other, "at_edges", "At Edges", false),
+    anti_backstab = gui.Checkbox(anti_aim_other, "anti_backstab", "Anti-Backstab", false),
+    auto_teleport = gui.Checkbox(anti_aim_other, "auto_teleport", "Auto Teleport in Air", false),
 
     --legit anti-aim
     legit_anti_aim = gui.Checkbox(anti_aim_other, "legit_anti_aim", "Legit Anti-Aim", false),
@@ -108,20 +161,22 @@ local anti_aim_other_ui =
 
 
 --indicators settings
-local anti_aim_indicators = gui.Groupbox(anti_aim_settings_tab, "Indicators", 340, 350, 290, 350);
+local anti_aim_indicators = gui.Groupbox(anti_aim_settings_tab, "Indicators", 340, 425, 290, 350);
 
 local anti_aim_indicators_ui = 
 {
     --desync side indicators
-    desync_side_indicator = gui.Checkbox(anti_aim_indicators, "desync_side_indicator", "Enable Desync Side Indicator", false)
+    desync_side_indicator = gui.Checkbox(anti_aim_indicators, "desync_side_indicator", "Enable Desync Side Indicator", false),
+    manuals_indicator = gui.Checkbox(anti_aim_indicators, "manuals_indicator", "Enable Manuals Indicators", false),
 };
 
-local desync_side_indicator_color_active = gui.ColorPicker(anti_aim_indicators_ui.desync_side_indicator, "desync_side_indicator_color_inactive", "", 40, 40, 40, 200)
-local desync_side_indicator_color_inactive = gui.ColorPicker(anti_aim_indicators_ui.desync_side_indicator, "desync_side_indicator_color_active", "", 85, 125, 225, 200)
+local desync_side_indicator_color_active = gui.ColorPicker(anti_aim_indicators_ui.desync_side_indicator, "desync_side_indicator_color_active", "", 40, 40, 40, 200)
+local desync_side_indicator_color_inactive = gui.ColorPicker(anti_aim_indicators_ui.desync_side_indicator, "desync_side_indicator_color_inactive", "", 85, 125, 225, 200)
+local manuals_indicator_color = gui.ColorPicker(anti_aim_indicators_ui.manuals_indicator, "manuals_indicator_color", "", 85, 125, 225, 200)
 
 
 --rage settings
-local anti_aim_rage = gui.Groupbox(anti_aim_settings_tab, "Rage", 340, 440, 290, 350);
+local anti_aim_rage = gui.Groupbox(anti_aim_settings_tab, "Rage", 340, 555, 290, 350);
 
 local anti_aim_rage_ui = 
 {
@@ -163,6 +218,16 @@ local function changeGui()
     end
 
     anti_aim_elements[1].override_condition:SetInvisible(true)
+
+    --checking for script enable
+    anti_aim_mode_selector:SetDisabled(not enable_script:GetValue())
+    anti_aim_condition_selector:SetDisabled(not enable_script:GetValue())
+    anti_aim_rage:SetDisabled(not enable_script:GetValue())
+    anti_aim_indicators:SetDisabled(not enable_script:GetValue())
+    anti_aim_other:SetDisabled(not enable_script:GetValue())
+    anti_aim_binds:SetDisabled(not enable_script:GetValue())
+    anti_aim_simple_settings:SetDisabled(not enable_script:GetValue())
+    anti_aim_advanced_settings:SetDisabled(not enable_script:GetValue())
 end
 --endregion
 
@@ -237,21 +302,55 @@ end
 
 
 --function, that handling all often-used variables
-local real_time, anti_aim_condition, side_switch_delay = globals.RealTime(), anti_aim_conditions_types.GENERAL, 2;
+local real_time, anti_aim_condition, side_switch_delay, should_switch, fake_lag_factor = globals.RealTime(), anti_aim_conditions_types.GENERAL, 2, false, 0;
+
+local current_weapon_group = "shared"
+local patterns =
+{
+    "%s+";
+    "auto";
+    "lightmachinegun";
+    "submachinegun";
+    "heavypistol";
+}
+local replacements =
+{
+    "";
+    "a";
+    "lmg";
+    "smg";
+    "hpistol";
+}
+
+local cmd_sendpacket = false
+local last_switch_time = 0;
 
 local function handleVariables()
 
     --local data
     local_entity = entities.GetLocalPlayer()
 
+    --weapon group
+    current_weapon_group = string.lower(string.gsub(gui.GetValue("rbot.hitscan.accuracy"), '"', ""))
+    for i = 1, #patterns do
+        current_weapon_group = string.gsub(current_weapon_group, patterns[i], replacements[i])
+    end
+
     --anti-aims
     anti_aim_condition = getAntiAimCondition()
     advanced_mode_enabled = advanced_mode:GetValue()
+    fake_lag_factor = gui.GetValue("misc.fakelag.enable") and gui.GetValue("misc.fakelag.factor") or anti_aim_elements[anti_aim_condition].yaw_modifier_speed:GetValue()
 
     --time
     real_time = globals.RealTime()
-    side_switch_delay = (gui.GetValue("rbot.accuracy.attack.shared.fire") == '"Defensive Warp Fire"'
-                        and anti_aim_elements[anti_aim_condition].yaw_modifier_speed:GetValue() or gui.GetValue("misc.fakelag.factor"))
+
+    --side switch delay
+    side_switch_delay = ((gui.GetValue("rbot.accuracy.attack.shared.fire") == '"Defensive Warp Fire"' or gui.GetValue("rbot.accuracy.attack." .. current_weapon_group .. ".fire") == '"Defensive Warp Fire"')
+                        or (gui.GetValue("rbot.accuracy.attack.shared.fire") == '"Shift Fire"' or gui.GetValue("rbot.accuracy.attack." .. current_weapon_group .. ".fire") == '"Shift Fire"'))
+                        and anti_aim_elements[anti_aim_condition].yaw_modifier_speed:GetValue() or fake_lag_factor
+
+    --if jitter speed is 1 then making no checks for delay
+    should_switch = (real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) and cmd_sendpacket)
 end
 --endregion
 
@@ -379,13 +478,11 @@ constants.TICK_TIME = 1 / 64
 
 local jitter_yaw = 0;
 local side_switcher = 1;
-local last_switch_time = 0;
 local random_yaw = 0;
 
 
 --all desync modifiers
 local desync_angle = 0;
-local cmd_sendpacket = false
 
 local function advancedDesyncModifier()
 
@@ -396,7 +493,7 @@ local function advancedDesyncModifier()
     if anti_aim_elements[anti_aim_condition].desync_modifier:GetValue() == 1 then
 
         --if delta time >= switch delay then switching jitter side
-        if real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) and cmd_sendpacket then
+        if should_switch then
             
             --switching side
             desync_inverted = not desync_inverted
@@ -436,20 +533,17 @@ local function advancedYawModifier()
     --checking for fake flick
     if anti_aim_elements[anti_aim_condition].yaw_modifier:GetValue() == 6 then
 
-        --if delta time >= switch delay then switching jitter side
-        if real_time - last_switch_time >= ((side_switcher > 0 and 1 or side_switch_delay) * constants.TICK_TIME) and cmd_sendpacket then
-            
+        if real_time - last_switch_time >= ((side_switcher > 0 and 1 or side_switch_delay) * constants.TICK_TIME) and not cmd_sendpacket then
+
             jitter_yaw = (side_switcher > 0 and 0 or (desync_inverted and 100 or -100))
 
             side_switcher = -side_switcher
-
-
             last_switch_time = real_time
         end
     else
-        
+
         --if delta time >= switch delay then switching jitter side
-        if real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) and cmd_sendpacket then
+        if should_switch then
 
             jitter_yaw = all_jitter_yaw_values[anti_aim_elements[anti_aim_condition].yaw_modifier:GetValue() + 1]
 
@@ -466,7 +560,7 @@ constants.ANGLE_PER_POSITION = 10;
 local function simpleJitter()
     
     --if delta time >= switch delay then switching jitter side
-    if real_time - last_switch_time >= (side_switch_delay * constants.TICK_TIME) and cmd_sendpacket then
+    if should_switch then
 
         --center jitter
         jitter_yaw = (constants.ANGLE_PER_POSITION * anti_aim_simple_settings_ui.jitter_angle:GetValue()) * side_switcher
@@ -504,6 +598,113 @@ local function mainYaw()
         main_yaw = desync_inverted and anti_aim_simple_settings_ui.yaw_angle:GetValue() or -anti_aim_simple_settings_ui.yaw_angle:GetValue()
     end
 end
+
+
+--anti-backstab
+local anti_backstab_yaw = 0;
+constants.ANTI_BACKSTAB_DISTANCE = 100;
+
+local function antiBackstab()
+
+    --checking for enable
+    if not anti_aim_other_ui.anti_backstab:GetValue() or not local_entity or not local_entity:IsAlive() then
+        anti_backstab_yaw = 0
+        return
+    end
+
+    --iterating over all entities
+    for _, entity in pairs(entities.FindByClass("CCSPlayer")) do
+
+        --check entity for valid target
+        if entity:GetTeamNumber() ~= local_entity:GetTeamNumber() and entity ~= local_entity and entity:IsPlayer() and entity:IsAlive() then
+
+            --getting distance to entity
+            local entity_abs = entity:GetAbsOrigin()
+            local local_abs = local_entity:GetAbsOrigin()
+            local distance_to_entity = vector.Distance(entity_abs.x, entity_abs.y, entity_abs.z, local_abs.x, local_abs.y, local_abs.z)
+
+            --finding entity, with knife and close to us
+            if string.find(tostring(entity:GetPropEntity("m_hActiveWeapon")), "knife") and distance_to_entity <= constants.ANTI_BACKSTAB_DISTANCE then
+
+                anti_backstab_yaw = 180;
+            end
+        else
+
+            anti_backstab_yaw = 0;
+        end
+    end
+end
+
+
+--auto-teleport
+--checking for visibility of enity
+local function isVisible(entity)
+
+    --checking local entity for valid
+    local local_entity = entities.GetLocalPlayer()
+    if not local_entity or not local_entity:IsAlive() then
+        return  
+    end
+
+    --local_eye is our view offset
+    local local_eye = local_entity:GetAbsOrigin() + Vector3(0, 0, local_entity:GetPropFloat("localdata", "m_vecViewOffset[2]"))
+
+    --checking only for 4 main hitboxes, due to optimization
+    local FIRST_HITBOX_NUMBER = 0;
+    local LAST_HITBOX_NUMBER = 3;
+
+    --iterating over all hitboxes to check them to visibility
+    for current_hitbox = FIRST_HITBOX_NUMBER, LAST_HITBOX_NUMBER, 1 do
+
+        local trace_to_hitbox = engine.TraceLine(Vector3(local_eye.x, local_eye.y, local_eye.z), entity:GetHitboxPosition(current_hitbox))
+
+        --checking for contents to get trace hitting something or not
+        if trace_to_hitbox.contents == 0 then
+            return true
+        end
+    end
+
+    return false
+end
+
+
+local last_teleport_time = 0;
+local dt_cache, hs_cache, cache_installed = false, false, false;
+constants.TELEPORT_DELAY_TIME = 2;
+constants.TELEPORT_TIME = 0.15;
+
+local function autoTeleport()
+
+    --iterating over all entities
+    for _, entity in pairs(entities.FindByClass("CCSPlayer")) do
+
+        --check entity for valid target
+        if entity:GetTeamNumber() ~= local_entity:GetTeamNumber() and entity ~= local_entity and entity:IsPlayer() and entity:IsAlive() then
+
+            --checking enemy visibility and teleport delay time and to we are in air
+            if isVisible(entity) and getAntiAimCondition() == anti_aim_conditions_types.IN_AIR and real_time - last_teleport_time >= constants.TELEPORT_DELAY_TIME then
+
+                --collecting cache
+                hs_cache, dt_cache, cache_installed = anti_aim_rage_ui.hide_shots:GetValue(), anti_aim_rage_ui.double_fire:GetValue(), false;
+
+                --disabling exploits and because script has bind for DT and HS it will be automatically enabled
+                anti_aim_rage_ui.hide_shots:SetValue(false); 
+                anti_aim_rage_ui.double_fire:SetValue(false);
+
+                last_teleport_time = real_time;
+            end
+
+            --returning to the last cache and checking, that teleport worked for given time
+            if not cache_installed and real_time - last_teleport_time >= constants.TELEPORT_TIME then
+
+                anti_aim_rage_ui.hide_shots:SetValue(hs_cache); 
+                anti_aim_rage_ui.double_fire:SetValue(dt_cache);
+
+                cache_installed = true;
+            end
+        end
+    end
+end
 --endregion
 
 
@@ -534,7 +735,9 @@ local function setAntiAims(cmd)
 
     cmd_sendpacket = cmd.sendpacket
 
-    gui.SetValue("rbot.antiaim.base", tostring(clampYaw(180 + jitter_yaw - main_yaw + (legit_yaw == nil and 0 or legit_yaw) + ((manual_yaw == nil or legit_yaw) and 0 or manual_yaw))) .. getDesyncType())
+    gui.SetValue("rbot.antiaim.base", tostring(clampYaw(180 + anti_backstab_yaw + jitter_yaw - main_yaw + (legit_yaw == nil and 0 or legit_yaw) + 
+                                                        ((manual_yaw == nil or legit_yaw) and 0 or manual_yaw))) .. getDesyncType())
+
     gui.SetValue("rbot.antiaim.base.rotation", desync_angle)
 end
 --endregion
@@ -561,6 +764,7 @@ local function setExploits()
     end
 
     gui.SetValue("rbot.accuracy.attack.shared.fire", exploit_state)
+    gui.SetValue("rbot.accuracy.attack." .. current_weapon_group .. ".fire", exploit_state)
 end
 --endregion
 
@@ -624,6 +828,61 @@ local function drawDesyncSideIndicator()
                       screen_height / 2 + constants.DESYNC_SIDE_INDICATOR_SIZE_Y / 2 + 1,
                       screen_width / 2 - constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER + 1, 
                       screen_height / 2 - constants.DESYNC_SIDE_INDICATOR_SIZE_Y / 2 - 1)
+end
+
+
+constants.MANUALS_INDICATOR_SIZE_X = 22;
+constants.MANUALS_INDICATOR_SIZE_Y = 22;
+constants.DISTANCE_FROM_SIDE_INDICATORS = 5;
+
+local function drawManualIndicators()
+
+    if not anti_aim_indicators_ui.manuals_indicator:GetValue() or not local_entity or not local_entity:IsAlive() then
+        return 
+    end
+
+    --getting screen sizes
+    local screen_width, screen_height = draw.GetScreenSize()
+
+    draw.Color(manuals_indicator_color:GetValue())
+    
+    --checking for manuals
+    if manual_right then
+
+        draw.Triangle(screen_width / 2 + constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER + constants.DISTANCE_FROM_SIDE_INDICATORS,
+                      screen_height / 2 - constants.MANUALS_INDICATOR_SIZE_Y / 2,
+                      screen_width / 2 + constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER + constants.DISTANCE_FROM_SIDE_INDICATORS, 
+                      screen_height / 2 + constants.MANUALS_INDICATOR_SIZE_Y / 2,
+                      screen_width / 2 + constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER + constants.DISTANCE_FROM_SIDE_INDICATORS + constants.MANUALS_INDICATOR_SIZE_Y,
+                      screen_height / 2)
+        
+    elseif manual_left then  
+        
+        draw.Triangle(screen_width / 2 - constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER - constants.DISTANCE_FROM_SIDE_INDICATORS,
+                      screen_height / 2 - constants.MANUALS_INDICATOR_SIZE_Y / 2,
+                      screen_width / 2 - constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER - constants.DISTANCE_FROM_SIDE_INDICATORS, 
+                      screen_height / 2 + constants.MANUALS_INDICATOR_SIZE_Y / 2,
+                      screen_width / 2 - constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER - constants.DISTANCE_FROM_SIDE_INDICATORS - constants.MANUALS_INDICATOR_SIZE_Y,
+                      screen_height / 2)
+
+    elseif manual_back then
+        
+        draw.Triangle(screen_width / 2 - constants.MANUALS_INDICATOR_SIZE_X / 2,
+                      screen_height / 2 + constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER + constants.DISTANCE_FROM_SIDE_INDICATORS,
+                      screen_width / 2 + constants.MANUALS_INDICATOR_SIZE_X / 2,
+                      screen_height / 2 + constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER + constants.DISTANCE_FROM_SIDE_INDICATORS,
+                      screen_width / 2,
+                      screen_height / 2 + constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER + constants.DISTANCE_FROM_SIDE_INDICATORS + constants.MANUALS_INDICATOR_SIZE_Y)
+
+    elseif manual_forward then
+        
+        draw.Triangle(screen_width / 2 - constants.MANUALS_INDICATOR_SIZE_X / 2,
+                      screen_height / 2 - constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER - constants.DISTANCE_FROM_SIDE_INDICATORS,
+                      screen_width / 2 + constants.MANUALS_INDICATOR_SIZE_X / 2,
+                      screen_height / 2 - constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER - constants.DISTANCE_FROM_SIDE_INDICATORS,
+                      screen_width / 2,
+                      screen_height / 2 - constants.DESYNC_SIDE_INDICATOR_DISTANCE_FROM_CENTER - constants.DISTANCE_FROM_SIDE_INDICATORS - constants.MANUALS_INDICATOR_SIZE_Y)
+    end
 end
 --endregion
 
@@ -881,33 +1140,46 @@ callbacks.Register("Draw", function()
     --gui
     changeGui()
 
-    --handlers
-    handleVariables()
+    --checking for script enable
+    if enable_script:GetValue() then
 
-    --anti-aims
-    invertDesync()
-    manualAntiAims()
+        --handlers
+        handleVariables()
 
-    --indicators
-    drawDesyncSideIndicator()
+        --anti-aims
+        invertDesync()
+        manualAntiAims()
+
+        --indicators
+        drawDesyncSideIndicator()
+        drawManualIndicators()
+    end
 end)
 
 
 callbacks.Register("PostMove", function(cmd)
     
-    --anti-aims
-    legitAntiAims()
-    controleAntiAimStates()
+    --checking for script enable
+    if enable_script:GetValue() then
 
-    callJitterFunctions()
-    mainYaw()
-    setAntiAims(cmd)
+        --anti-aims
+        legitAntiAims()
+        controleAntiAimStates()
 
-    --rage
-    setExploits()
+        callJitterFunctions()
+        mainYaw()
+        setAntiAims(cmd)
 
-    --configs
-    disableInactiveConfigs()
+        antiBackstab()
+
+        autoTeleport()
+
+        --rage
+        setExploits()
+
+        --configs
+        disableInactiveConfigs()
+    end
 end)
 --endregion
 
