@@ -1,5 +1,5 @@
 --region AUTO_UPDATER
-local CURRENT_VERSION = "2.0"
+local CURRENT_VERSION = "2.1"
 local LAST_VERSION = http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/AntiAimVersion")
 
 --writing file with our version to remove tonumber, string.gsub for random format
