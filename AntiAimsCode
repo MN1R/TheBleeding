@@ -1,5 +1,5 @@
 --region AUTO_UPDATER
-local CURRENT_VERSION = "2.1"
+local CURRENT_VERSION = "2.2"
 local LAST_VERSION = http.Get("https://raw.githubusercontent.com/MN1R/TheBleeding/main/AntiAimVersion")
 
 --writing file with our version to remove tonumber, string.gsub for random format
@@ -602,7 +602,7 @@ end
 
 --anti-backstab
 local anti_backstab_yaw = 0;
-constants.ANTI_BACKSTAB_DISTANCE = 100;
+constants.ANTI_BACKSTAB_DISTANCE = 125;
 
 local function antiBackstab()
 
@@ -623,8 +623,10 @@ local function antiBackstab()
             local local_abs = local_entity:GetAbsOrigin()
             local distance_to_entity = vector.Distance(entity_abs.x, entity_abs.y, entity_abs.z, local_abs.x, local_abs.y, local_abs.z)
 
+            local enemy_weapon = tostring(entity:GetPropEntity("m_hActiveWeapon"))
+
             --finding entity, with knife and close to us
-            if entity:GetPropEntity("m_hActiveWeapon") ~= nil and string.find(tostring(entity:GetPropEntity("m_hActiveWeapon")), "knife") and distance_to_entity <= constants.ANTI_BACKSTAB_DISTANCE then
+            if distance_to_entity <= constants.ANTI_BACKSTAB_DISTANCE and type(enemy_weapon) == "string" and string.find(enemy_weapon, "knife") then
 
                 anti_backstab_yaw = 180;
             end
