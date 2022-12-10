@@ -4,7 +4,7 @@ local LAST_VERSION = http.Get("https://raw.githubusercontent.com/MN1R/TheBleedin
 
 --writing file with our version to remove tonumber, string.gsub for random format
 local latest_version_file_name = "bleeding_last_version.txt"
-file.Write(latest_version_file_name, '"' .. LAST_VERSION .. '"')
+file.Write(latest_version_file_name,  tostring(LAST_VERSION))
 
 --getting data from file, its 100% string
 local file_open = file.Open(latest_version_file_name, 'r')
