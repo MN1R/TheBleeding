@@ -97,8 +97,8 @@ local function createAntiAimGui()
         condition_array.desync_modifier = gui.Combobox(anti_aim_advanced_settings, "desync_modifier_" .. element_varname, "Desync Modifier",
                                           "Static", "Jitter")
 
-        condition_array.desync_range_right = gui.Slider(anti_aim_advanced_settings, "desync_range_right_" .. element_varname, "Desync Range Right", 0, 0, 58, 1)
-        condition_array.desync_range_left = gui.Slider(anti_aim_advanced_settings, "desync_range_left_" .. element_varname, "Desync Range Left", 0, 0, 58, 1)
+        condition_array.desync_range_right = gui.Slider(anti_aim_advanced_settings, "desync_range_right_" .. element_varname, "Desync Range Right", 0, 0, 58, 2)
+        condition_array.desync_range_left = gui.Slider(anti_aim_advanced_settings, "desync_range_left_" .. element_varname, "Desync Range Left", 0, 0, 58, 2)
 
         --yaw modifiers
         condition_array.yaw_angle_right = gui.Slider(anti_aim_advanced_settings, "yaw_angle_right_" .. element_varname, "Yaw Angle Right", 0, -180, 180, 1)
